@@ -5,10 +5,6 @@ pipeline {
         DOCKER_IMAGE = 'shvmrathod/flask-app:latest'
     }
 
-    tools {
-        sonarQubeScanner 'SonarScanner' // Must match the name in Global Tool Configuration
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -18,7 +14,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('MySonar') { // Must match the name in SonarQube server config
+                withSonarQubeEnv('MySonar') {
                     sh 'sonar-scanner'
                 }
             }
