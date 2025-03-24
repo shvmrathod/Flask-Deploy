@@ -5,10 +5,22 @@ pipeline {
         DOCKER_IMAGE = 'shvmrathod/flask-app:latest'
     }
 
+    tools {
+        sonarQubeScanner 'SonarScanner' // Must match the name in Global Tool Configuration
+    }
+
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/shvmrathod/Flask-Deploy.git'
+                git credentialsId: 'Shivam', branch: 'main', url: 'https://github.com/shvmrathod/Flask-Deploy.git'
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv('MySonar') { // Must match the name in SonarQube server config
+                    sh 'sonar-scanner'
+                }
             }
         }
 
