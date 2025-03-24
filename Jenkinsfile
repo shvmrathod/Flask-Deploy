@@ -14,7 +14,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('MySonar') {
+                withSonarQubeEnv('MySonar') { // Must match the name from Jenkins → Configure System
                     sh 'sonar-scanner'
                 }
             }
