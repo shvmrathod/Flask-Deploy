@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10'
-            args '-u root'
-        }
-    }
+    agent any
 
     environment {
         DOCKER_IMAGE = 'shvmrathod/flask-app:latest'
@@ -19,20 +14,22 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install --upgrade pip'
-                sh 'pip install -r requirements.txt'
+                script {
+                    docker.image('python:3.10').inside {
+                        sh 'pip install --upgrade pip'
+                        sh 'pip install -r requirements.txt'
+                    }
+                }
             }
         }
 
         stage('Build Docker Image') {
-            agent {
-                docker {
-                    image 'docker:latest'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
-            }
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                script {
+                    docker.image('docker:latest').inside('--privileged -v /var/run/docker.sock:/var/run/docker.sock') {
+                        sh 'docker build -t $DOCKER_IMAGE .'
+                    }
+                }
             }
         }
 
