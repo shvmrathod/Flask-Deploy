@@ -14,8 +14,8 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('MySonar') { // Must match the name from Jenkins → Configure System
-                    sh 'sonar-scanner'
+                withSonarQubeEnv('MySonar') {
+                    sh '/opt/homebrew/bin/sonar-scanner'
                 }
             }
         }
