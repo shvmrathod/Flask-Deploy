@@ -32,28 +32,36 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Debug Docker Path') {
             steps {
                 sh 'which docker'
                 sh 'which docker-credential-desktop'
-                }
-}
+            }
+        }
+
         stage('Verify PATH') {
             steps {
                 sh 'echo $PATH'
                 sh 'which docker-credential-desktop'
             }
-}
+        }
+
         stage('Debug Docker Credential Helper') {
             steps {
                 sh 'which docker-credential-desktop'
+            }
         }
-}
+
         stage('Build Docker Image') {
             steps {
                 sh '/usr/local/bin/docker build -t $DOCKER_IMAGE .'
-                
+            }
+        }
+
+        stage('Set Docker Context to Default') {
+            steps {
+                sh 'docker context use default'
             }
         }
 
