@@ -32,7 +32,11 @@ pipeline {
                 '''
             }
         }
-
+        stage('Debug Docker Credential Helper') {
+            steps {
+                sh 'which docker-credential-desktop'
+        }
+}
         stage('Build Docker Image') {
             steps {
                 sh '/usr/local/bin/docker build -t $DOCKER_IMAGE .'
