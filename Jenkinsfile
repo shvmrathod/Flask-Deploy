@@ -14,8 +14,10 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('MySonar') {
-                    sh '/opt/homebrew/bin/sonar-scanner'
+                withCredentials([string(credentialsId: 'sonar_token', variable: 'SONAR_TOKEN')]) {
+                    withSonarQubeEnv('MySonar') {
+                        sh "/opt/homebrew/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN"
+                    }
                 }
             }
         }
