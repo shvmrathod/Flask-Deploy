@@ -32,6 +32,19 @@ pipeline {
                 '''
             }
         }
+        
+        stage('Debug Docker Path') {
+            steps {
+                sh 'which docker'
+                sh 'which docker-credential-desktop'
+                }
+}
+        stage('Verify PATH') {
+            steps {
+                sh 'echo $PATH'
+                sh 'which docker-credential-desktop'
+            }
+}
         stage('Debug Docker Credential Helper') {
             steps {
                 sh 'which docker-credential-desktop'
