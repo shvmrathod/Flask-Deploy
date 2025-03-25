@@ -6,7 +6,6 @@ pipeline {
     }
 
     stages {
-
         stage('Clone Repository') {
             steps {
                 git credentialsId: 'Shivam', branch: 'main', url: 'https://github.com/shvmrathod/Flask-Deploy.git'
@@ -23,26 +22,20 @@ pipeline {
             }
         }
 
-    stage('Install Dependencies') {
-    steps {
-        sh '''
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install --upgrade pip
-            pip install -r requirements.txt
-        '''
-    }
-}
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    def dockerImage = docker.image('docker:latest')
-                    dockerImage.pull()
-                    dockerImage.inside('--privileged -v /var/run/docker.sock:/var/run/docker.sock') {
-                        sh "docker build -t $DOCKER_IMAGE ."
-                    }
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
