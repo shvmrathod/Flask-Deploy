@@ -23,18 +23,16 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    def pyImage = docker.image('python:3.10')
-                    pyImage.pull()
-                    pyImage.inside {
-                        sh 'pip install --upgrade pip'
-                        sh 'pip install -r requirements.txt'
-                    }
-                }
-            }
-        }
+    stage('Install Dependencies') {
+    steps {
+        sh '''
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+        '''
+    }
+}
 
         stage('Build Docker Image') {
             steps {
