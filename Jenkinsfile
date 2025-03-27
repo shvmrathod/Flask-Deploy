@@ -70,6 +70,13 @@ pipeline {
         }
     }
 
+
+        stage('Apply Ingress') {
+            steps {
+                sh 'kubectl apply -f ingress.yaml'
+            }
+        }
+
     post {
         success {
             echo '✅ Pipeline completed and deployed to Minikube!'
