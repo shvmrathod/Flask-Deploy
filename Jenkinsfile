@@ -68,14 +68,13 @@ pipeline {
                 '''
             }
         }
-    }
-
 
         stage('Apply Ingress') {
             steps {
                 sh 'kubectl apply -f ingress.yaml'
             }
         }
+    }
 
     post {
         success {
