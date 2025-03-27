@@ -15,4 +15,7 @@ COPY templates /app/templates
 COPY static /app/static
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt     
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ✅ Add this to run your app
+CMD ["python", "app.py"]
