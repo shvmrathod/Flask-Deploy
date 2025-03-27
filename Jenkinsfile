@@ -68,7 +68,12 @@ pipeline {
                 '''
             }
         }
-
+        
+        stage('Start Minikube Tunnel') {
+            steps {
+                sh 'nohup minikube tunnel > /dev/null 2>&1 &'
+            }
+        }
         stage('Apply Ingress') {
             steps {
                 sh 'kubectl apply -f ingress.yaml'
