@@ -33,35 +33,21 @@ pipeline {
             }
         }
 
-        stage('Debug Docker Path') {
-            steps {
-                sh 'which docker'
-                sh 'which docker-credential-desktop'
-            }
-        }
-
-        stage('Verify PATH') {
-            steps {
-                sh 'echo $PATH'
-                sh 'which docker-credential-desktop'
-            }
-        }
-
-        stage('Debug Docker Credential Helper') {
-            steps {
-                sh 'which docker-credential-desktop'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh '/usr/local/bin/docker build -t $DOCKER_IMAGE .'
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
-        stage('Set Docker Context to Default') {
+        stage('Scan with Trivy') {
             steps {
-                sh 'docker context use default'
+                sh '''
+                    if ! command -v trivy &> /dev/null; then
+                        echo "Trivy not found, installing..."
+                        brew install aquasecurity/trivy/trivy
+                    fi
+                    trivy image --severity CRITICAL,HIGH $DOCKER_IMAGE
+                '''
             }
         }
 
@@ -72,14 +58,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to Minikube') {
+            steps {
+                sh '''
+                    kubectl config use-context minikube
+                    kubectl apply -f k8s/deployment.yaml
+                    kubectl apply -f k8s/service.yaml
+                '''
+            }
+        }
     }
 
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo '✅ Pipeline completed and deployed to Minikube!'
         }
         failure {
-            echo '❌ Pipeline failed. Please check the logs for details.'
+            echo '❌ Pipeline failed. Check the logs.'
         }
     }
 }
