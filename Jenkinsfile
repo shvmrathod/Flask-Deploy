@@ -32,6 +32,12 @@ pipeline {
                 '''
             }
         }
+        
+        stage('Set Docker Context') {
+            steps {
+                sh 'docker context use default'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
