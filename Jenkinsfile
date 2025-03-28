@@ -80,6 +80,20 @@ pipeline {
                 sh 'nohup minikube tunnel > /dev/null 2>&1 &'
             }
         }
+
+        
+        stage('Apply Prometheus Config') {
+            steps {
+                sh '''
+                    kubectl apply -f prometheus-config.yaml
+                    kubectl apply -f prometheus-additional.yaml
+                    kubectl patch prometheus prometheus-kube-prometheus-prometheus \
+                    -n default \
+                    --type=merge \
+                    -p '{"spec": {"additionalScrapeConfigs": {"name": "additional-scrape-configs", "key": "prometheus-additional.yaml"}}}'
+                   '''
+           }
+        }
         stage('Apply Ingress') {
             steps {
                 sh 'kubectl apply -f ingress.yaml'
