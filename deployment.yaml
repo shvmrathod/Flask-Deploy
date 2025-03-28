@@ -15,5 +15,6 @@ spec:
       containers:
       - name: flask-container
         image: shvmrathod/flask-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
